@@ -11,7 +11,8 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/' feeds/luci/collections/luci-li
 git clone https://github.com/Internet1235/openwrt-iptvhelper.git package/iptvhelper
 git clone https://github.com/esirplayground/luci-app-poweroff.git package/luci-app-poweroff
 git clone https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
-git clone https://github.com/sirpdboy/luci-app-advanced.git package/luci-app-advanced
+git clone https://github.com/sirpdboy/luci-app-advanced.git package/luci-app-advanced'
+sed -i 's/of_property_present/fwnode_property_present/g' drivers/net/phy/rtl8367b.c
 echo "# Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 
