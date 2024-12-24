@@ -20,7 +20,7 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: .config
+  CONFIG_FILE: ${{ matrix.target }}.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: true
@@ -32,6 +32,19 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - apm821xx-nand
+          - ath79-generic
+          - mpc85xx
+          - mt7621
+          - mvebu-cortexa9
+          - rockchip_armv8
+          - sifiveu-generic
+          - x86-geode
+          - x86_64
 
     steps:
     - name: Checkout
