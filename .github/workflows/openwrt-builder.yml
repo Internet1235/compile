@@ -37,7 +37,7 @@ jobs:
         target:
           - apm821xx-nand
           - ath79-generic
-          - mpc85xx
+          - mpc85xx-p1010
           - mt7621
           - mvebu-cortexa9
           - rockchip_armv8
