@@ -12,7 +12,8 @@ git clone https://github.com/Internet1235/openwrt-iptvhelper.git package/iptvhel
 git clone https://github.com/esirplayground/luci-app-poweroff.git package/luci-app-poweroff
 git clone https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
 git clone https://github.com/sirpdboy/luci-app-advanced.git package/luci-app-advanced
-sed -i 's/of_property_present/fwnode_property_present/g' target/linux/generic/files/drivers/net/phy/rtl8367b.c
+sed -i 's/of_property_present/device_property_present/g' target/linux/generic/files/drivers/net/phy/rtl8367b.c
+sed -i 's/smi->parent->of_node/&smi->parent->dev/g' target/linux/generic/files/drivers/net/phy/rtl8367b.c
 echo "# Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 
