@@ -22,6 +22,7 @@ env:
   FEEDS_CONF: feeds.conf.default
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
+  ccache: false
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -37,6 +38,13 @@ jobs:
         target:
           - apm821xx-nand
           - ath79-generic
+          - mpc85xx-p1010
+          - mt7621
+          - mvebu-cortexa9
+          - rockchip_armv8
+          - sifiveu-generic
+          - x86-geode
+          - x86_64
 
     steps:
     - name: Checkout
@@ -64,6 +72,7 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
     - name: Cache
+      if: env.ccache == 'true'
       uses: stupidloud/cachewrtbuild@main
       with:
         ccache: 'true'
