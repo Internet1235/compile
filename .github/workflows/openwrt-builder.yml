@@ -37,7 +37,6 @@ jobs:
         target:
           - apm821xx-nand
           - ath79-generic
-          - x86-geode
 
     steps:
     - name: Checkout
