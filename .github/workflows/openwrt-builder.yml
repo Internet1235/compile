@@ -23,9 +23,9 @@ env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   ccache: false
-  UPLOAD_BIN_DIR: true
-  UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: true
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: false
   UPLOAD_IPK: false
   TZ: Asia/Shanghai
 
@@ -39,7 +39,7 @@ jobs:
           - apm821xx-nand
           - ath79-generic
           - mpc85xx-p1010
-          - mt7621
+          - ramips-mt7621
           - mvebu-cortexa9
           - rockchip_armv8
           - sifiveu-generic
@@ -174,6 +174,27 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
+    - name: Upload SDK directory
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      with:
+        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl.Linux-x86_64.tar.xz
+
+    - name: Upload SDK directory
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && matrix.target == 'mvebu-cortexa9' && !cancelled()
+      with:
+        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
+
+    - name: Upload SDK directory
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && matrix.target == 'ramips-mt7621' && !cancelled()
+      with:
+        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+
     - name: Generate release tag
       id: tag1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
@@ -192,5 +213,29 @@ jobs:
         tag_name: ${{ matrix.target }}-${{ steps.tag1.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
+        
+  download-and-upload-to-release:
+    runs-on: ubuntu-22.04
+    needs: 
+      - build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: mkdir release file
+      run: mkdir release
+
+    - name: download openwrt-sdk-${{ matrix.target }}
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl.Linux-x86_64.tar.xz
+        path: release
+
+    - name: download openwrt-sdk-${{ matrix.target }}
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
+        path: release
+        
 
 
