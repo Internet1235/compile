@@ -42,7 +42,7 @@ jobs:
           - mpc85xx-p1010
           - ramips-mt7621
           - mvebu-cortexa9
-          - rockchip_armv8
+          - rockchip-armv8
           - sifiveu-generic
           - x86-geode
           - x86-64
