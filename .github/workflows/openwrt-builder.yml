@@ -30,6 +30,7 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
+  # job1
   build:
     runs-on: ubuntu-22.04
     strategy:
@@ -214,6 +215,7 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
         
+  # job2
   download-and-upload-to-release:
     runs-on: ubuntu-22.04
     needs: 
@@ -236,6 +238,27 @@ jobs:
       with:
         name: openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
         path: release
+
+    - name: download openwrt-sdk-${{ matrix.target }}
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+        path: release
+
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        touch release.txt
+        [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+        echo "status=success" >> $GITHUB_OUTPUT
         
-
-
+    - name: upload openwrt-sdk-${{ matrix.target }}-to-release
+      uses: softprops/action-gh-release@v2
+      if: steps.tag.outputs.status == 'success'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        filesss: release/*
