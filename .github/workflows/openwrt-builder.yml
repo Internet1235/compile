@@ -232,7 +232,7 @@ jobs:
         files: ${{ env.FIRMWARE }}/*
         
   # job2
-  download-and-upload-to-release:
+  download-and-release:
     runs-on: ubuntu-22.04
     needs:
       - build
@@ -261,7 +261,7 @@ jobs:
         name: openwrt-sdk-mpc85xx-p1010_gcc-13.3.0_musl.Linux-x86_64.tar.xz
         path: release
     
-    - name: download openwrt-sdk-rockchip_armv8
+    - name: download openwrt-sdk-rockchip-armv8
       uses: actions/download-artifact@v4.1.8
       with:
         name: openwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.xz
@@ -294,7 +294,7 @@ jobs:
     - name: download openwrt-sdk-ramips-mt7621
       uses: actions/download-artifact@v4.1.8
       with:
-        name: openwrt-sdk-rampis-mt7621_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+        name: openwrt-sdk-ramips-mt7621_gcc-8.4.0_musl.Linux-x86_64.tar.xz
         path: release
 
     - name: Generate release tag
