@@ -175,23 +175,32 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
+    - name: Organize files
+      id: organize1
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
     - name: Upload SDK directory
       uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && !cancelled()
+      if: steps.organize1.outputs.status == 'success' && !cancelled()
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl.Linux-x86_64.tar.xz
 
     - name: Upload SDK directory
       uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && matrix.target == 'mvebu-cortexa9' && !cancelled()
+      if: steps.organize1.outputs.status == 'success' && matrix.target == 'mvebu-cortexa9' && !cancelled()
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
 
     - name: Upload SDK directory
       uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && matrix.target == 'ramips-mt7621' && !cancelled()
+      if: steps.organize1.outputs.status == 'success' && matrix.target == 'ramips-mt7621' && !cancelled()
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
