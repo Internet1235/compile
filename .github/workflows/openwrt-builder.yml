@@ -201,14 +201,7 @@ jobs:
 
     - name: Upload SDK directory
       uses: actions/upload-artifact@main
-      if: steps.organize1.outputs.status == 'success' && matrix.target == 'ramips-mt7621' && !cancelled()
-      with:
-        name: openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
-        path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
-
-    - name: Upload SDK directory
-      uses: actions/upload-artifact@main
-      if: steps.organize1.outputs.status == 'success' && matrix.target == 'ath79-generic' && !cancelled()
+      if: steps.organize1.outputs.status == 'success' && matrix.target == 'ramips-mt7621' || matrix.target == 'ath79-generic' && !cancelled()
       with:
         name: openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
         path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-8.4.0_musl.Linux-x86_64.tar.xz
