@@ -15,6 +15,8 @@ name: OpenWrt Builder
 on:
   repository_dispatch:
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 27 * *'
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -216,7 +218,7 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@master
       if: steps.tag1.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -231,64 +233,12 @@ jobs:
     needs:
       - build
     steps:
-    - name: Checkout
-      uses: actions/checkout@main
-
     - name: mkdir release file
       run: mkdir release
 
-    - name: download openwrt-sdk-apm821xx-nand
-      uses: actions/download-artifact@v4.1.8
+    - name: Download All artifacts
+      uses: actions/download-artifact@v4
       with:
-        name: openwrt-sdk-apm821xx-nand_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-    
-    - name: download openwrt-sdk-ath79-generic
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-ath79-generic_gcc-8.4.0_musl.Linux-x86_64.tar.xz
-        path: release
-    
-    - name: download openwrt-sdk-mpc85xx-p1010
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-mpc85xx-p1010_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-    
-    - name: download openwrt-sdk-rockchip-armv8
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-
-    - name: download openwrt-sdk-sifiveu-generic
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-sifiveu-generic_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-
-    - name: download openwrt-sdk-x86-geode
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-x86-geode_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-
-    - name: download openwrt-sdk-x86-64
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        path: release
-    
-    - name: download openwrt-sdk-mvebu-cortexa9
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-mvebu-cortexa9_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
-        path: release
-    
-    - name: download openwrt-sdk-ramips-mt7621
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: openwrt-sdk-ramips-mt7621_gcc-8.4.0_musl.Linux-x86_64.tar.xz
         path: release
 
     - name: Generate release tag
