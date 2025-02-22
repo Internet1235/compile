@@ -233,6 +233,12 @@ jobs:
     needs:
       - build
     steps:
+    - name: Checkout
+      uses: actions/checkout@main
+      with: 
+        repository: Internet1235/gh-action-sdk
+        persist-credentials: false
+      
     - name: mkdir release file
       run: mkdir release
 
@@ -248,6 +254,7 @@ jobs:
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
         touch release.txt
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+        echo "old=$(cat VERSION)" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         
     - name: upload openwrt-sdk-to-release
@@ -259,3 +266,22 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: release/*
+
+    - name: update gh-action-sdk version
+      id: now-version
+      if: steps.tag.outputs.status == 'success'
+      run: |
+        rm -rf release && rm release.txt
+        sed -i 's/${{ steps.tag.outputs.old }}/${{ steps.tag.outputs.release_tag }}/' .github/workflows/openwrt-builder.yml
+        echo "${{ steps.tag.outputs.release_tag }}" > VERSION
+        git config --local user.email "${{ secrets.EMAIL }}"
+        git config --local user.name "${{ secrets.NAME }}"
+        git commit -a -m "bump to ${{ steps.tag.outputs.release_tag }}"
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: push to gh-action-sdk
+      uses: ad-m/github-push-action@master
+      if: steps.now-version.outputs.status == 'success'
+      with: 
+        github_token: ${{ secrets.PAT }}
+        repository: Internet1235/gh-action-sdk
