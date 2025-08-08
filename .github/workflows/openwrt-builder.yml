@@ -100,6 +100,7 @@ jobs:
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv config/${{ matrix.target }}.config openwrt/.config
         chmod +x $DIY_P2_SH
+        mv 001_fix_image_build.patch openwrt
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
