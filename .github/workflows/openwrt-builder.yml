@@ -42,9 +42,10 @@ jobs:
         target:
           - apm821xx-nand
           - ath79-generic
+          - loongarch64-generic
           - mpc85xx-p1010
-          - ramips-mt7621
           - mvebu-cortexa9
+          - ramips-mt7621
           - rockchip-armv8
           - sifiveu-generic
           - x86-geode
