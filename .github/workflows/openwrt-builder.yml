@@ -41,6 +41,7 @@ jobs:
       matrix:
         target:
           - apm821xx-nand
+          - armsr-armv7
           - ath79-generic
           - loongarch64-generic
           - mpc85xx-p1010
@@ -197,7 +198,7 @@ jobs:
 
     - name: Upload SDK directory
       uses: actions/upload-artifact@main
-      if: steps.organize1.outputs.status == 'success' && matrix.target == 'mvebu-cortexa9' && !cancelled()
+      if: steps.organize1.outputs.status == 'success' && matrix.target == 'mvebu-cortexa9' || matrix.target == 'armsr-armv7' && !cancelled()
       with:
         name: openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
         path: ${{ env.FIRMWARE }}/openwrt-sdk-${{ matrix.target }}_gcc-13.3.0_musl_eabi.Linux-x86_64.tar.xz
