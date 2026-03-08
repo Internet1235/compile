@@ -47,7 +47,7 @@ jobs:
   gcc13:
     name: Build ${{ matrix.target }} (gcc 13)
     runs-on: ubuntu-22.04
-    if: github.event.inputs.gcc13 == 'true'
+    if: github.event.inputs.gcc13 == 'true' || github.event_name == 'schedule'
     strategy:
       fail-fast: false
       matrix:
@@ -245,7 +245,7 @@ jobs:
   gcc14:
     name: Build ${{ matrix.target }} (gcc 14)
     runs-on: ubuntu-22.04
-    if: github.event.inputs.gcc14 == 'true'
+    if: github.event.inputs.gcc14 == 'true' || github.event_name == 'schedule'
     strategy:
       fail-fast: false
       matrix:
